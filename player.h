@@ -9,3 +9,5 @@
 
 //#define MAXIMILIAN_PORTAUDIO
 #define MAXIMILIAN_RT_AUDIO
+
+void start_player();

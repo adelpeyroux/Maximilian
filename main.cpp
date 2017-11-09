@@ -1,4 +1,5 @@
 #include "maximilian.h"
+#include "player.h"
 
 //This shows how the fundamental building block of digital audio - the sine wave.
 //
@@ -14,3 +15,8 @@ void play(double *output) {
     
 }
 
+int main() {
+  start_player();
+  std::cout << "ici" << std::endl;
+  return 0;
+}
