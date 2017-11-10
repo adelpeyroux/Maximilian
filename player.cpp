@@ -20,8 +20,11 @@
 #include <dsound.h>
 #endif
 #include "RtAudio.h"
+RtAudio dac;
 #endif
 
+
+bool stop_all = false;
 
 void setup();//use this to do any initialisation if you want.
 
@@ -50,13 +53,13 @@ int routing(const void *inputBuffer,
     //	double currentTime = (double) streamTime; Might come in handy for control
     if ( status )
       std::cout << "Stream underflow detected!" << std::endl;
-    for ( i=0; i<nBufferFrames; i++ ) {	
+    for ( i=0; i<nBufferFrames; i++ ) {
     }
     // Write interleaved audio data.
     for ( i=0; i<nBufferFrames; i++ ) {
       play(lastValues);			
       for ( j=0; j<maxiSettings::channels; j++ ) {
-	*buffer++=lastValues[j];
+        *buffer++=lastValues[j];
       }
     }
     return 0;
@@ -97,20 +100,8 @@ int routing(const void *inputBuffer,
     err = Pa_StartStream( stream );
     if( err != paNoError )
       std::cout <<   "PortAudio error: " << Pa_GetErrorText( err ) << std::endl;
-	
-	
-    char input;
-    std::cout << "\nMaximilian is playing ... press <enter> to quit.\n";
-    std::cin.get( input );
-	
-	
-	
-    err = Pa_Terminate();
-    if( err != paNoError )
-      std::cout <<  "PortAudio error: "<< Pa_GetErrorText( err ) << std::endl;
-	
 #elif defined(MAXIMILIAN_RT_AUDIO)
-    RtAudio dac(RtAudio::WINDOWS_DS);
+    dac = RtAudio(RtAudio::WINDOWS_DS);
     if ( dac.getDeviceCount() < 1 ) {
       std::cout << "\nNo audio devices found!\n";
       char input;
@@ -138,18 +129,29 @@ int routing(const void *inputBuffer,
       exit( 0 );
     }
 	
-    char input;
-    std::cout << "\nMaximilian is playing ... press <enter> to quit.\n";
-    std::cin.get( input );
-	
-    try {
-      // Stop the stream
-      dac.stopStream();
-    }
-    catch (RtError& e) {
-      e.printMessage();
-    }
-	
-    if ( dac.isStreamOpen() ) dac.closeStream();
+#endif
+  }
+
+
+  void stop_stream() {
+#ifdef MAXIMILIAN_PORTAUDIO
+      PaError err;
+
+      err = Pa_Terminate();
+      if( err != paNoError )
+        std::cout <<  "PortAudio error: "<< Pa_GetErrorText( err ) << std::endl;
+
+      stop_all = true;
+#elif defined(MAXIMILIAN_RT_AUDIO)
+
+      try {
+        // Stop the stream
+        dac.stopStream();
+      }
+      catch (RtError& e) {
+        e.printMessage();
+      }
+
+      if ( dac.isStreamOpen() ) dac.closeStream();
 #endif
   }

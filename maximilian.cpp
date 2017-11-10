@@ -51,7 +51,7 @@ extern "C" {
 float chandiv= 1;
 
 int maxiSettings::sampleRate = 44100;
-int maxiSettings::channels = 2;
+int maxiSettings::channels = 1;
 int maxiSettings::bufferSize = 1024;
 
 

@@ -7,7 +7,16 @@
  *
  */
 
-//#define MAXIMILIAN_PORTAUDIO
-#define MAXIMILIAN_RT_AUDIO
+#ifndef __PLAYER_H__
+#define __PLAYER_H__
+
+
+#define MAXIMILIAN_PORTAUDIO
+//#define MAXIMILIAN_RT_AUDIO
 
 void start_player();
+
+void stop_stream();
+
+
+#endif
